@@ -2,7 +2,6 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -25,6 +24,7 @@ import {
   TableRow,
   Textarea,
 } from "../components"
+import { Button } from "../components/Button"
 
 const PostsManager = () => {
   const navigate = useNavigate()
