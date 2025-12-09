@@ -2,10 +2,6 @@ import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -24,6 +20,7 @@ import {
   Textarea,
 } from "../components"
 import { Button } from "../components/Button"
+import { Card, CardContent, CardHeader, CardTitle } from "../components/Card"
 import { Input } from "../components/Input"
 
 const PostsManager = () => {
