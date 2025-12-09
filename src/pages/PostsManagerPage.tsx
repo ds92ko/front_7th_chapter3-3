@@ -6,11 +6,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Table,
   TableBody,
   TableCell,
@@ -21,6 +16,7 @@ import {
 import { Button } from "../components/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/Card"
 import { Input } from "../components/Input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/Select"
 import { Textarea } from "../components/Textarea"
 
 const PostsManager = () => {
