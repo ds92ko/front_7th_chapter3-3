@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from "react-router-dom"
-import PostsManagerPage from "./pages/PostsManagerPage.tsx"
+import PostsManagerPage from "./pages/posts-manager"
 import { Footer, Header } from "./shared/ui"
 
 const App = () => {
