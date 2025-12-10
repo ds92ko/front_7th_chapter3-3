@@ -1,8 +1,8 @@
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import OrderSelect from "../../features/order/ui/OrderSelect"
-import SortBySelect from "../../features/sort-by/ui/SortBySelect"
+import OrderSelect from "../../features/post/ui/OrderSelect"
+import SortBySelect from "../../features/post/ui/SortBySelect"
 import TagBadge from "../../features/tag/ui/TagBadge"
 import TagSelect from "../../features/tag/ui/TagSelect"
 import {
@@ -24,7 +24,7 @@ import {
   TableRow,
   Textarea,
 } from "../../shared/ui"
-import PaginationControls from "../../widgets/page-control/ui/PaginationControls"
+import PaginationControls from "../../widgets/post/ui/PaginationControls"
 
 const PostsManager = () => {
   const navigate = useNavigate()

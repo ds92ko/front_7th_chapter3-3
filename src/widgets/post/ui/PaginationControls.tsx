@@ -1,5 +1,5 @@
-import LimitSelect from "../../../features/limit/ui/LimitSelect"
-import Pagination from "../../../features/skip/ui/Pagination"
+import LimitSelect from "../../../features/post/ui/LimitSelect"
+import Pagination from "../../../features/post/ui/Pagination"
 
 const PaginationControls = ({ total }: { total: number }) => {
   return (
