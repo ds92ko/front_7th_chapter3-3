@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  HighlightText,
   Input,
   Table,
   TableBody,
@@ -311,21 +312,6 @@ const PostsManager = () => {
     updateURL()
   }, [location.search])
 
-  // 하이라이트 함수 추가
-  const highlightText = (text: string, highlight: string) => {
-    if (!text) return null
-    if (!highlight.trim()) {
-      return <span>{text}</span>
-    }
-    const regex = new RegExp(`(${highlight})`, "gi")
-    const parts = text.split(regex)
-    return (
-      <span>
-        {parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>))}
-      </span>
-    )
-  }
-
   // 게시물 테이블 렌더링
   const renderPostTable = () => (
     <Table>
@@ -344,7 +330,9 @@ const PostsManager = () => {
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{highlightText(post.title, queryParams.get("search") || "")}</div>
+                <div>
+                  <HighlightText text={post.title} highlight={queryParams.get("search") || ""} />
+                </div>
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => (
                     <TagBadge key={tag} tag={tag} />
@@ -413,7 +401,9 @@ const PostsManager = () => {
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{highlightText(comment.body, queryParams.get("search") || "")}</span>
+              <span className="truncate">
+                <HighlightText text={comment.body} highlight={queryParams.get("search") || ""} />
+              </span>
             </div>
             <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
@@ -554,10 +544,14 @@ const PostsManager = () => {
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, queryParams.get("search") || "")}</DialogTitle>
+            <DialogTitle>
+              <HighlightText text={selectedPost?.title} highlight={queryParams.get("search") || ""} />
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, queryParams.get("search") || "")}</p>
+            <p>
+              <HighlightText text={selectedPost?.body} highlight={queryParams.get("search") || ""} />
+            </p>
             {renderComments(selectedPost?.id)}
           </div>
         </DialogContent>
