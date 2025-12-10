@@ -6,7 +6,12 @@ export class ApiClient {
   }
 
   private buildUrl(endpoint: string, queryParams?: Record<string, string | number>): string {
-    const url = new URL(endpoint, this.baseUrl)
+    const base =
+      this.baseUrl ||
+      (typeof window !== "undefined"
+        ? window.location.origin
+        : import.meta.env.VITE_API_BASE_URL || "http://localhost:5173")
+    const url = new URL(endpoint, base)
 
     if (queryParams) {
       Object.entries(queryParams).forEach(([key, value]) => {
