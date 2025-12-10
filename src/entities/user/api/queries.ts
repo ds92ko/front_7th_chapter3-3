@@ -8,9 +8,13 @@ export const userQueries = {
       queryKey: [...userQueries.all],
       queryFn: getUsers,
     }),
-  detail: (id: number) =>
+  detail: (id: number | null) =>
     queryOptions({
       queryKey: [...userQueries.all, id],
-      queryFn: () => getUser(id),
+      queryFn: () => {
+        if (id === null) throw new Error("User ID is required")
+        return getUser(id)
+      },
+      enabled: id !== null,
     }),
 }
