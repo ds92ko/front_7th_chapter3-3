@@ -1,6 +1,7 @@
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import LimitSelect from "../../features/limit/ui/LimitSelect"
 import OrderSelect from "../../features/order/ui/OrderSelect"
 import SortBySelect from "../../features/sort-by/ui/SortBySelect"
 import TagBadge from "../../features/tag/ui/TagBadge"
@@ -16,11 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Table,
   TableBody,
   TableCell,
@@ -39,7 +35,6 @@ const PostsManager = () => {
   const [posts, setPosts] = useState([])
   const [total, setTotal] = useState(0)
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"))
-  const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
@@ -60,7 +55,8 @@ const PostsManager = () => {
     const currentParams = new URLSearchParams(location.search)
     const params = new URLSearchParams()
     if (skip) params.set("skip", skip.toString())
-    if (limit) params.set("limit", limit.toString())
+    const limit = currentParams.get("limit")
+    if (limit) params.set("limit", limit)
     if (searchQuery) params.set("search", searchQuery)
     const sortBy = currentParams.get("sortBy")
     if (sortBy) params.set("sortBy", sortBy)
@@ -78,6 +74,7 @@ const PostsManager = () => {
     let usersData
 
     const currentParams = new URLSearchParams(location.search)
+    const limit = currentParams.get("limit")
     const sortBy = currentParams.get("sortBy")
     const order = currentParams.get("order")
     fetch(`/api/posts?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`)
@@ -309,12 +306,11 @@ const PostsManager = () => {
       fetchPosts()
     }
     updateURL()
-  }, [skip, limit, location.search])
+  }, [skip, location.search])
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
-    setLimit(parseInt(params.get("limit") || "10"))
     setSearchQuery(params.get("search") || "")
   }, [location.search])
 
@@ -486,23 +482,20 @@ const PostsManager = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
-              </Select>
+              <LimitSelect />
               <span>항목</span>
             </div>
             <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
+              <Button
+                disabled={skip === 0}
+                onClick={() => setSkip(Math.max(0, skip - Number(queryParams.get("limit") || 10)))}
+              >
                 이전
               </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
+              <Button
+                disabled={skip + Number(queryParams.get("limit") || 10) >= total}
+                onClick={() => setSkip(skip + Number(queryParams.get("limit") || 10))}
+              >
                 다음
               </Button>
             </div>
