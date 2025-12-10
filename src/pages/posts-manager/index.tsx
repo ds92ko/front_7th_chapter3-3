@@ -1,7 +1,8 @@
-import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
+import { Edit2, MessageSquare, Plus, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import OrderSelect from "../../features/post/ui/OrderSelect"
+import SearchInput from "../../features/post/ui/SearchInput"
 import SortBySelect from "../../features/post/ui/SortBySelect"
 import TagBadge from "../../features/tag/ui/TagBadge"
 import TagSelect from "../../features/tag/ui/TagSelect"
@@ -34,7 +35,6 @@ const PostsManager = () => {
   // 상태 관리
   const [posts, setPosts] = useState([])
   const [total, setTotal] = useState(0)
-  const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
@@ -57,7 +57,8 @@ const PostsManager = () => {
     if (skip) params.set("skip", skip)
     const limit = currentParams.get("limit")
     if (limit) params.set("limit", limit)
-    if (searchQuery) params.set("search", searchQuery)
+    const search = currentParams.get("search")
+    if (search) params.set("search", search)
     const sortBy = currentParams.get("sortBy")
     if (sortBy) params.set("sortBy", sortBy)
     const order = currentParams.get("order")
@@ -104,13 +105,14 @@ const PostsManager = () => {
 
   // 게시물 검색
   const searchPosts = async () => {
-    if (!searchQuery) {
+    const search = queryParams.get("search")
+    if (!search) {
       fetchPosts()
       return
     }
     setLoading(true)
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`)
+      const response = await fetch(`/api/posts/search?q=${search}`)
       const data = await response.json()
       setPosts(data.posts)
       setTotal(data.total)
@@ -301,17 +303,15 @@ const PostsManager = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const tag = params.get("tag")
+    const search = params.get("search")
     if (tag) {
       fetchPostsByTag(tag)
+    } else if (search) {
+      searchPosts()
     } else {
       fetchPosts()
     }
     updateURL()
-  }, [location.search])
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    setSearchQuery(params.get("search") || "")
   }, [location.search])
 
   // 하이라이트 함수 추가
@@ -347,7 +347,7 @@ const PostsManager = () => {
             <TableCell>{post.id}</TableCell>
             <TableCell>
               <div className="space-y-1">
-                <div>{highlightText(post.title, searchQuery)}</div>
+                <div>{highlightText(post.title, queryParams.get("search") || "")}</div>
                 <div className="flex flex-wrap gap-1">
                   {post.tags?.map((tag) => (
                     <TagBadge key={tag} tag={tag} />
@@ -416,7 +416,7 @@ const PostsManager = () => {
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>
-              <span className="truncate">{highlightText(comment.body, searchQuery)}</span>
+              <span className="truncate">{highlightText(comment.body, queryParams.get("search") || "")}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Button variant="ghost" size="sm" onClick={() => likeComment(comment.id, postId)}>
@@ -458,18 +458,7 @@ const PostsManager = () => {
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
           <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="게시물 검색..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && searchPosts()}
-                />
-              </div>
-            </div>
+            <SearchInput />
             <TagSelect />
             <SortBySelect />
             <OrderSelect />
@@ -573,10 +562,10 @@ const PostsManager = () => {
       <Dialog open={showPostDetailDialog} onOpenChange={setShowPostDetailDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>{highlightText(selectedPost?.title, searchQuery)}</DialogTitle>
+            <DialogTitle>{highlightText(selectedPost?.title, queryParams.get("search") || "")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p>{highlightText(selectedPost?.body, searchQuery)}</p>
+            <p>{highlightText(selectedPost?.body, queryParams.get("search") || "")}</p>
             {renderComments(selectedPost?.id)}
           </div>
         </DialogContent>
