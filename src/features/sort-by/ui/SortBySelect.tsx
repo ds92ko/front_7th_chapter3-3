@@ -18,7 +18,9 @@ const SortBySelect = () => {
       </SelectTrigger>
       <SelectContent>
         {SORT_BY_OPTIONS.map(({ value, label }) => (
-          <SelectItem value={value}>{label}</SelectItem>
+          <SelectItem key={value} value={value}>
+            {label}
+          </SelectItem>
         ))}
       </SelectContent>
     </Select>

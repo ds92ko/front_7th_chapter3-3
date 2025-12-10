@@ -16,7 +16,9 @@ const OrderSelect = () => {
       </SelectTrigger>
       <SelectContent>
         {ORDER_OPTIONS.map(({ value, label }) => (
-          <SelectItem value={value}>{label}</SelectItem>
+          <SelectItem key={value} value={value}>
+            {label}
+          </SelectItem>
         ))}
       </SelectContent>
     </Select>
