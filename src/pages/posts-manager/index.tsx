@@ -1,10 +1,10 @@
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import OrderSelect from "../../features/order/ui/OrderSelect"
 import SortBySelect from "../../features/sort-by/ui/SortBySelect"
 import TagBadge from "../../features/tag/ui/TagBadge"
 import TagSelect from "../../features/tag/ui/TagSelect"
-import { buildQueryString } from "../../shared/lib/params"
 import {
   Button,
   Card,
@@ -42,7 +42,6 @@ const PostsManager = () => {
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState(null)
-  const [order, setOrder] = useState(queryParams.get("order") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [newPost, setNewPost] = useState({ title: "", body: "", userId: 1 })
@@ -65,6 +64,7 @@ const PostsManager = () => {
     if (searchQuery) params.set("search", searchQuery)
     const sortBy = currentParams.get("sortBy")
     if (sortBy) params.set("sortBy", sortBy)
+    const order = currentParams.get("order")
     if (order) params.set("order", order)
     const tag = currentParams.get("tag")
     if (tag) params.set("tag", tag)
@@ -79,6 +79,7 @@ const PostsManager = () => {
 
     const currentParams = new URLSearchParams(location.search)
     const sortBy = currentParams.get("sortBy")
+    const order = currentParams.get("order")
     fetch(`/api/posts?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`)
       .then((response) => response.json())
       .then((data) => {
@@ -308,14 +309,13 @@ const PostsManager = () => {
       fetchPosts()
     }
     updateURL()
-  }, [skip, limit, order, location.search])
+  }, [skip, limit, location.search])
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
     setLimit(parseInt(params.get("limit") || "10"))
     setSearchQuery(params.get("search") || "")
-    setOrder(params.get("order") || "asc")
   }, [location.search])
 
   // 하이라이트 함수 추가
@@ -476,23 +476,7 @@ const PostsManager = () => {
             </div>
             <TagSelect />
             <SortBySelect />
-            <Select
-              value={order}
-              onValueChange={(value) => {
-                setOrder(value)
-                const currentParams = new URLSearchParams(location.search)
-                const params = buildQueryString(currentParams, { order: value })
-                navigate(`?${params}`)
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 순서" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">오름차순</SelectItem>
-                <SelectItem value="desc">내림차순</SelectItem>
-              </SelectContent>
-            </Select>
+            <OrderSelect />
           </div>
 
           {/* 게시물 테이블 */}
