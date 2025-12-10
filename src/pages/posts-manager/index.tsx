@@ -1,6 +1,7 @@
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import SortBySelect from "../../features/sort-by/ui/SortBySelect"
 import TagBadge from "../../features/tag/ui/TagBadge"
 import TagSelect from "../../features/tag/ui/TagSelect"
 import { buildQueryString } from "../../shared/lib/params"
@@ -41,7 +42,6 @@ const PostsManager = () => {
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"))
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "")
   const [selectedPost, setSelectedPost] = useState(null)
-  const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "")
   const [order, setOrder] = useState(queryParams.get("order") || "asc")
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
@@ -63,6 +63,7 @@ const PostsManager = () => {
     if (skip) params.set("skip", skip.toString())
     if (limit) params.set("limit", limit.toString())
     if (searchQuery) params.set("search", searchQuery)
+    const sortBy = currentParams.get("sortBy")
     if (sortBy) params.set("sortBy", sortBy)
     if (order) params.set("order", order)
     const tag = currentParams.get("tag")
@@ -76,6 +77,8 @@ const PostsManager = () => {
     let postsData
     let usersData
 
+    const currentParams = new URLSearchParams(location.search)
+    const sortBy = currentParams.get("sortBy")
     fetch(`/api/posts?limit=${limit}&skip=${skip}&sortBy=${sortBy}&order=${order}`)
       .then((response) => response.json())
       .then((data) => {
@@ -305,14 +308,13 @@ const PostsManager = () => {
       fetchPosts()
     }
     updateURL()
-  }, [skip, limit, sortBy, order, location.search])
+  }, [skip, limit, order, location.search])
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     setSkip(parseInt(params.get("skip") || "0"))
     setLimit(parseInt(params.get("limit") || "10"))
     setSearchQuery(params.get("search") || "")
-    setSortBy(params.get("sortBy") || "")
     setOrder(params.get("order") || "asc")
   }, [location.search])
 
@@ -473,26 +475,7 @@ const PostsManager = () => {
               </div>
             </div>
             <TagSelect />
-
-            <Select
-              value={sortBy}
-              onValueChange={(value) => {
-                setSortBy(value)
-                const currentParams = new URLSearchParams(location.search)
-                const params = buildQueryString(currentParams, { sortBy: value })
-                navigate(`?${params}`)
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="정렬 기준" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">없음</SelectItem>
-                <SelectItem value="id">ID</SelectItem>
-                <SelectItem value="title">제목</SelectItem>
-                <SelectItem value="reactions">반응</SelectItem>
-              </SelectContent>
-            </Select>
+            <SortBySelect />
             <Select
               value={order}
               onValueChange={(value) => {
