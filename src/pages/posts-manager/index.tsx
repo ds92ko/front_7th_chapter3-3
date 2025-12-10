@@ -1,11 +1,7 @@
 import { Edit2, MessageSquare, Plus, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import OrderSelect from "../../features/post/ui/OrderSelect"
-import SearchInput from "../../features/post/ui/SearchInput"
-import SortBySelect from "../../features/post/ui/SortBySelect"
 import TagBadge from "../../features/tag/ui/TagBadge"
-import TagSelect from "../../features/tag/ui/TagSelect"
 import {
   Button,
   Card,
@@ -25,6 +21,7 @@ import {
   TableRow,
   Textarea,
 } from "../../shared/ui"
+import FilterControls from "../../widgets/post/ui/FilterControls"
 import PaginationControls from "../../widgets/post/ui/PaginationControls"
 
 const PostsManager = () => {
@@ -457,12 +454,7 @@ const PostsManager = () => {
       <CardContent>
         <div className="flex flex-col gap-4">
           {/* 검색 및 필터 컨트롤 */}
-          <div className="flex gap-4">
-            <SearchInput />
-            <TagSelect />
-            <SortBySelect />
-            <OrderSelect />
-          </div>
+          <FilterControls />
 
           {/* 게시물 테이블 */}
           {loading ? <div className="flex justify-center p-4">로딩 중...</div> : renderPostTable()}
