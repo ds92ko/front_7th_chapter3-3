@@ -19,8 +19,8 @@ export interface PostsResponse {
 }
 
 export interface PostsParams extends Record<string, string | number> {
-  limit: number
-  skip: number
+  limit: string
+  skip: string
   sortBy: string
   order: string
 }
