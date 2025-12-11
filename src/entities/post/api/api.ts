@@ -1,8 +1,21 @@
 import { apiClient } from "../../../shared/api/base"
-import { DeletePostResponse, PostsParams, PostsResponse, UpdatePostBody, UpdatePostResponse } from "../model/types"
+import {
+  AddPostBody,
+  AddPostResponse,
+  DeletePostResponse,
+  PostsParams,
+  PostsResponse,
+  UpdatePostBody,
+  UpdatePostResponse,
+} from "../model/types"
 
 export const getPosts = async (params: PostsParams) => {
   const response = await apiClient.get<PostsResponse>("/api/posts", params)
+  return response
+}
+
+export const addPost = async (body: AddPostBody) => {
+  const response = await apiClient.post<AddPostResponse>("/api/posts/add", body)
   return response
 }
 

@@ -16,6 +16,14 @@ export interface UpdatePostBody extends Record<string, unknown> {
   body: string
 }
 
+export interface AddPostBody extends UpdatePostBody {
+  userId: number
+}
+
+export interface AddPostResponse extends AddPostBody {
+  id: number
+}
+
 export type UpdatePostResponse = Omit<Post, "views">
 
 export interface DeletePostResponse extends Post {
