@@ -1,11 +1,5 @@
 import { apiClient } from "../../../shared/api/base"
-import {
-  Comment,
-  CommentRequestBody,
-  CommentResponse,
-  CommentsResponse,
-  UpdateCommentRequestBody,
-} from "../model/types"
+import { Comment, CommentRequestBody, CommentResponse, CommentsResponse } from "../model/types"
 
 export const getComments = async (id: number) => {
   const response = await apiClient.get<CommentsResponse>(`/api/comments/post/${id}`)
@@ -13,17 +7,21 @@ export const getComments = async (id: number) => {
 }
 
 export const postComment = async (body: CommentRequestBody) => {
-  const response = await apiClient.post<CommentResponse>("/api/comments", body)
+  const response = await apiClient.post<CommentResponse>("/api/comments/add", body)
   return response
 }
 
-export const putComment = async (id: number, body: UpdateCommentRequestBody) => {
-  const response = await apiClient.put<Comment>(`/api/comments/${id}`, body)
+export const putComment = async (comment: Comment) => {
+  const response = await apiClient.put<Comment>(`/api/comments/${comment.id}`, {
+    body: comment.body,
+  })
   return response
 }
 
-export const patchComment = async (id: number, body: UpdateCommentRequestBody) => {
-  const response = await apiClient.patch<Comment>(`/api/comments/${id}`, body)
+export const patchComment = async (comment: Comment) => {
+  const response = await apiClient.patch<Comment>(`/api/comments/${comment.id}`, {
+    body: comment.body,
+  })
   return response
 }
 
