@@ -21,6 +21,11 @@ interface User extends UserBase {
   }
 }
 
-export type UsersResponse = UserBase[]
+export interface UsersResponse {
+  users: UserBase[]
+  limit: number
+  skip: number
+  total: number
+}
 
 export type UserResponse = User
