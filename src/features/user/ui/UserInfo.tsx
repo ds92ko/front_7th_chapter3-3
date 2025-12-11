@@ -1,7 +1,11 @@
 import { UserBase } from "../../../entities/user/model/types"
 import { useDialogActions } from "../../../shared/model/useDialog"
 
-const UserInfo = ({ user }: { user: UserBase }) => {
+interface UserInfoProps {
+  user: UserBase
+}
+
+const UserInfo = ({ user }: UserInfoProps) => {
   const { setDialog } = useDialogActions()
 
   return (
