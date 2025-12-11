@@ -8,9 +8,16 @@ export const postWithAuthorQueries = {
   all: ["postWithAuthor"] as const,
   list: (queryClient: QueryClient, params: PostsParams) =>
     queryOptions({
-      queryKey: [...postWithAuthorQueries.all],
+      queryKey: [...postWithAuthorQueries.all, "list", params],
       queryFn: async () => {
-        const { posts, total } = await queryClient.ensureQueryData(postQueries.list(params))
+        const queryOptions =
+          params.tag && params.tag !== "all"
+            ? postQueries.tag(params)
+            : params.search
+              ? postQueries.search(params)
+              : postQueries.list(params)
+
+        const { posts, total } = await queryClient.ensureQueryData(queryOptions)
         const { users } = await queryClient.ensureQueryData(userQueries.list())
 
         const processedData = posts.map((post) => ({
@@ -26,19 +33,21 @@ export const postWithAuthorQueries = {
     }),
   detail: (queryClient: QueryClient, id: number | null) =>
     queryOptions({
-      queryKey: [...postWithAuthorQueries.all, id],
+      queryKey: [...postWithAuthorQueries.all, "detail", id],
       queryFn: async () => {
         if (id === null) throw new Error("Post ID is required")
 
-        const cachedData = queryClient.getQueryData<PostWithAuthorResponse>(postWithAuthorQueries.all)
+        const allListQueries = queryClient.getQueriesData<PostWithAuthorResponse>({
+          queryKey: [...postWithAuthorQueries.all, "list"],
+        })
 
-        if (!cachedData) throw new Error(`Post with id ${id} not found: list data not cached`)
+        for (const [, cachedData] of allListQueries) {
+          if (!cachedData) continue
+          const selectedPost = cachedData.data.find((post) => post.id === id)
+          if (selectedPost) return selectedPost
+        }
 
-        const selectedPost = cachedData.data.find((post) => post.id === id)
-
-        if (!selectedPost) throw new Error(`Post with id ${id} not found`)
-
-        return selectedPost
+        throw new Error(`Post with id ${id} not found: list data not cached`)
       },
       enabled: id !== null,
     }),

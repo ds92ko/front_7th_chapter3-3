@@ -15,51 +15,61 @@ export const postMutations = {
   add: (queryClient: QueryClient) => ({
     mutationFn: (body: AddPostBody) => addPost(body),
     onSuccess: async (data: AddPostResponse) => {
-      const listQueryKey = postWithAuthorQueries.all
-      const listData = queryClient.getQueryData<PostWithAuthorResponse>(listQueryKey)
+      const allListQueries = queryClient.getQueriesData<PostWithAuthorResponse>({
+        queryKey: [...postWithAuthorQueries.all, "list"],
+      })
       const user = await queryClient.ensureQueryData(userQueries.detail(data.userId))
 
-      if (listData) {
-        queryClient.setQueryData<PostWithAuthorResponse>(listQueryKey, {
-          ...listData,
-          data: [
-            {
-              ...data,
-              id: Math.max(...listData.data.map(({ id }) => id), listData.total) + 1,
-              tags: [],
-              reactions: { likes: 0, dislikes: 0 },
-              views: 0,
-              author: {
-                id: user?.id || data.userId,
-                image: user?.image || "",
-                username: user?.username || "",
+      allListQueries.forEach(([queryKey, listData]) => {
+        if (listData) {
+          queryClient.setQueryData<PostWithAuthorResponse>(queryKey, {
+            ...listData,
+            data: [
+              {
+                ...data,
+                id: Math.max(...listData.data.map(({ id }) => id), listData.total) + 1,
+                tags: [],
+                reactions: { likes: 0, dislikes: 0 },
+                views: 0,
+                author: {
+                  id: user?.id || data.userId,
+                  image: user?.image || "",
+                  username: user?.username || "",
+                },
               },
-            },
-            ...listData.data,
-          ],
-          total: listData.total + 1,
-        })
-      }
+              ...listData.data,
+            ],
+            total: listData.total + 1,
+          })
+        }
+      })
     },
   }),
   update: (queryClient: QueryClient) => ({
     mutationFn: ({ id, body }: { id: number; body: UpdatePostBody }) => updatePost(id, body),
-    onSuccess: (data: UpdatePostResponse) => {
-      const listQueryKey = postWithAuthorQueries.all
-      const listData = queryClient.getQueryData<PostWithAuthorResponse>(listQueryKey)
-      if (listData) {
-        queryClient.setQueryData<PostWithAuthorResponse>(listQueryKey, {
-          ...listData,
-          data: listData.data.map((post) => (post.id === data.id ? { ...post, ...data } : post)),
-        })
-      }
+    onSettled: (
+      _: UpdatePostResponse | undefined,
+      _error: Error | null,
+      { id, body }: { id: number; body: UpdatePostBody },
+    ) => {
+      const allListQueries = queryClient.getQueriesData<PostWithAuthorResponse>({
+        queryKey: [...postWithAuthorQueries.all, "list"],
+      })
+      allListQueries.forEach(([queryKey, listData]) => {
+        if (listData) {
+          queryClient.setQueryData<PostWithAuthorResponse>(queryKey, {
+            ...listData,
+            data: listData.data.map((post) => (post.id === id ? { ...post, ...body } : post)),
+          })
+        }
+      })
 
-      const detailQueryKey = [...postWithAuthorQueries.all, data.id]
+      const detailQueryKey = [...postWithAuthorQueries.all, "detail", id]
       const detailData = queryClient.getQueryData<PostWithAuthor>(detailQueryKey)
       if (detailData) {
         queryClient.setQueryData<PostWithAuthor>(detailQueryKey, {
           ...detailData,
-          ...data,
+          ...body,
         })
       }
     },
@@ -67,15 +77,18 @@ export const postMutations = {
   delete: (queryClient: QueryClient) => ({
     mutationFn: (id: number) => deletePost(id),
     onSettled: (_: DeletePostResponse | undefined, _error: Error | null, id: number) => {
-      const listQueryKey = postWithAuthorQueries.all
-      const listData = queryClient.getQueryData<PostWithAuthorResponse>(listQueryKey)
-      if (listData) {
-        queryClient.setQueryData<PostWithAuthorResponse>(listQueryKey, {
-          ...listData,
-          data: listData.data.filter((post) => post.id !== id),
-          total: listData.total - 1,
-        })
-      }
+      const allListQueries = queryClient.getQueriesData<PostWithAuthorResponse>({
+        queryKey: [...postWithAuthorQueries.all, "list"],
+      })
+      allListQueries.forEach(([queryKey, listData]) => {
+        if (listData) {
+          queryClient.setQueryData<PostWithAuthorResponse>(queryKey, {
+            ...listData,
+            data: listData.data.filter((post) => post.id !== id),
+            total: listData.total - 1,
+          })
+        }
+      })
     },
   }),
 }

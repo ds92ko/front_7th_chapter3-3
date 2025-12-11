@@ -43,4 +43,6 @@ export interface PostsParams extends Record<string, string | number> {
   skip: string
   sortBy: string
   order: string
+  search: string
+  tag: string
 }

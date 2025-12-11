@@ -14,6 +14,16 @@ export const getPosts = async (params: PostsParams) => {
   return response
 }
 
+export const getPostsBySearch = async (search: string) => {
+  const response = await apiClient.get<PostsResponse>(`/api/posts/search?q=${search}`)
+  return response
+}
+
+export const getPostsByTag = async (tag: string) => {
+  const response = await apiClient.get<PostsResponse>(`/api/posts/tag/${tag}`)
+  return response
+}
+
 export const addPost = async (body: AddPostBody) => {
   const response = await apiClient.post<AddPostResponse>("/api/posts/add", body)
   return response
