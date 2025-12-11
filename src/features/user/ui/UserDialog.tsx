@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../shared/ui"
-import { useUserDialog } from "./lib/useUserDialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui"
+import { useUserDialog } from "../lib/useUserDialog"
 
 const UserDialog = () => {
   const { user, isOpen, resetDialog } = useUserDialog()

@@ -2,7 +2,7 @@ import { Edit2, MessageSquare, Plus, ThumbsDown, ThumbsUp, Trash2 } from "lucide
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import TagBadge from "../../features/tag/ui/TagBadge"
-import UserDialog from "../../features/user/UserDialog"
+import UserDialog from "../../features/user/ui/UserDialog"
 import { useDialogActions } from "../../shared/model/useDialog"
 import {
   Button,
