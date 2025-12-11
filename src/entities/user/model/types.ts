@@ -1,4 +1,4 @@
-interface UserBase {
+export interface UserBase {
   id: number
   image: string
   username: string
