@@ -5,15 +5,14 @@ import { commentMutations } from "../api/mutations"
 
 export const useEditCommentDialog = () => {
   const queryClient = useQueryClient()
-  const { type, id } = useDialogContext()
+  const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
 
-  const postId = type?.split("-")[2]
+  const dialog = dialogs.find((dialog) => dialog.type?.startsWith("edit-comment-"))
+  const postId = dialog?.type?.split("-")[2]
   const listQueryKey = commentQueries.list(Number(postId)).queryKey
   const listData = queryClient.getQueryData(listQueryKey)
-  const comment = listData?.comments.find((comment) => comment.id === id)
-
-  const isOpen = type?.startsWith("edit-comment-")
+  const comment = listData?.comments.find((comment) => comment.id === dialog?.id)
 
   const { mutate: updateCommentMutation } = useMutation(commentMutations.update(queryClient))
 
@@ -24,7 +23,7 @@ export const useEditCommentDialog = () => {
   }
 
   return {
-    isOpen,
+    isOpen: !!dialog,
     comment,
     resetDialog,
     handleUpdate,

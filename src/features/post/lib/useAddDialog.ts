@@ -5,7 +5,8 @@ import { postMutations } from "../api/mutations"
 
 export const useAddDialog = () => {
   const queryClient = useQueryClient()
-  const { type } = useDialogContext()
+  const { dialogs } = useDialogContext()
+  const dialog = dialogs.find((dialog) => dialog.type === "add-post")
   const { resetDialog } = useDialogActions()
   const { mutate: addPostMutation } = useMutation(postMutations.add(queryClient))
 
@@ -15,7 +16,7 @@ export const useAddDialog = () => {
   }
 
   return {
-    isOpen: type === "add-post",
+    isOpen: !!dialog,
     resetDialog,
     handleAdd,
   }

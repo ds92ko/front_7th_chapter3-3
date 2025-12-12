@@ -3,13 +3,14 @@ import { userQueries } from "../../../entities/user/api/queries"
 import { useDialogActions, useDialogContext } from "../../../shared/model/useDialog"
 
 export const useUserDialog = () => {
-  const { type, id } = useDialogContext()
+  const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
+  const id = dialogs.find((dialog) => dialog.type === "user")?.id ?? null
   const { data: user } = useQuery(userQueries.detail(id))
 
   return {
     user,
-    isOpen: type === "user" && !!user,
+    isOpen: !!user,
     resetDialog,
   }
 }

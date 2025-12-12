@@ -7,14 +7,15 @@ export const useDetailDialog = () => {
   const queryClient = useQueryClient()
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
-  const { type, id } = useDialogContext()
+  const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
+  const id = dialogs.find((dialog) => dialog.type === "detail")?.id ?? null
   const { data: post } = useQuery(postWithAuthorQueries.detail(queryClient, id))
 
   const search = queryParams.get("search") || ""
 
   return {
-    isOpen: type === "detail" && !!post,
+    isOpen: !!post,
     post,
     search,
     resetDialog,

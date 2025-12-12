@@ -5,7 +5,7 @@ import { commentMutations } from "../api/mutations"
 
 export const useAddCommentDialog = () => {
   const queryClient = useQueryClient()
-  const { type, id } = useDialogContext()
+  const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
   const { mutate: addCommentMutation } = useMutation(commentMutations.add(queryClient))
 
@@ -14,8 +14,10 @@ export const useAddCommentDialog = () => {
     resetDialog()
   }
 
+  const id = dialogs.find((dialog) => dialog.type === "add-comment")?.id ?? null
+
   return {
-    isOpen: type === "add-comment" && !!id,
+    isOpen: !!id,
     id,
     resetDialog,
     handleAdd,

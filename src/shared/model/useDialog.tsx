@@ -1,12 +1,16 @@
 import { create } from "zustand/react"
 
-interface DialogContext {
+interface Dialog {
   type: string | null
   id: number | null
 }
 
+interface DialogContext {
+  dialogs: Dialog[]
+}
+
 interface DialogActions {
-  setDialog: (dialog: DialogContext) => void
+  setDialog: (dialog: Dialog) => void
   resetDialog: () => void
 }
 
@@ -16,8 +20,7 @@ interface DialogState {
 }
 
 const initialContext: DialogContext = {
-  type: null,
-  id: null,
+  dialogs: [],
 }
 
 const useDialog = create<DialogState>((set) => ({
@@ -25,8 +28,14 @@ const useDialog = create<DialogState>((set) => ({
     ...initialContext,
   },
   actions: {
-    setDialog: (dialog) => set({ context: dialog }),
-    resetDialog: () => set({ context: { ...initialContext } }),
+    setDialog: (dialog) => set(({ context }) => ({ context: { ...context, dialogs: [...context.dialogs, dialog] } })),
+    resetDialog: () =>
+      set(({ context }) => ({
+        context: {
+          ...context,
+          dialogs: context.dialogs.slice(0, -1),
+        },
+      })),
   },
 }))
 

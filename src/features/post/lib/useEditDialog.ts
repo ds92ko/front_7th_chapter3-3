@@ -6,8 +6,9 @@ import { postWithAuthorQueries } from "../api/queries"
 
 export const useEditDialog = () => {
   const queryClient = useQueryClient()
-  const { type, id } = useDialogContext()
+  const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
+  const id = dialogs.find((dialog) => dialog.type === "edit")?.id ?? null
   const { data: post } = useQuery(postWithAuthorQueries.detail(queryClient, id))
   const { mutate: updatePostMutation } = useMutation(postMutations.update(queryClient))
 
@@ -18,7 +19,7 @@ export const useEditDialog = () => {
   }
 
   return {
-    isOpen: type === "edit" && !!post,
+    isOpen: !!post,
     post,
     resetDialog,
     handleUpdate,
