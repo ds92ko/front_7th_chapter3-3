@@ -1,15 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { buildQueryString } from "../../../shared/lib/params"
+import { useQueryParams } from "../../../shared/lib/useQueryParams"
 
 export const useTagSelect = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const selectedTag = queryParams.get("tag") || "all"
+  const { getQueryParam, updateQuery } = useQueryParams()
+  const selectedTag = getQueryParam("tag")
 
   const handleChangeTag = (tag: string) => {
-    const params = buildQueryString(queryParams, { tag })
-    navigate(`?${params}`)
+    updateQuery({ tag })
   }
 
   return {

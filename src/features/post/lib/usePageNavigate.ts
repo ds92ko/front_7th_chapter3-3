@@ -1,21 +1,16 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { buildQueryString } from "../../../shared/lib/params"
+import { useQueryParams } from "../../../shared/lib/useQueryParams"
 
 export const usePageNavigate = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const skip = parseInt(queryParams.get("skip") || "0")
-  const limit = parseInt(queryParams.get("limit") || "10")
+  const { getQueryParam, updateQuery } = useQueryParams()
+  const skip = parseInt(getQueryParam("skip"))
+  const limit = parseInt(getQueryParam("limit"))
 
   const handleNavigate = {
     prev: () => {
-      const params = buildQueryString(queryParams, { skip: Math.max(0, skip - limit) })
-      navigate(`?${params}`)
+      updateQuery({ skip: Math.max(0, skip - limit) })
     },
     next: () => {
-      const params = buildQueryString(queryParams, { skip: skip + limit })
-      navigate(`?${params}`)
+      updateQuery({ skip: skip + limit })
     },
   }
 

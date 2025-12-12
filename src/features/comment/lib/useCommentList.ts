@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
-import { useLocation } from "react-router-dom"
 import { commentQueries } from "../../../entities/comment/api/queries"
+import { useQueryParams } from "../../../shared/lib/useQueryParams"
 
 export const useCommentList = (postId: number) => {
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const search = queryParams.get("search") || ""
+  const { getQueryParam } = useQueryParams()
   const { data: comments } = useQuery(commentQueries.list(postId))
+  const search = getQueryParam("search")
 
   return {
     comments,

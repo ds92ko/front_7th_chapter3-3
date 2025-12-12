@@ -1,15 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { buildQueryString } from "../../../shared/lib/params"
+import { useQueryParams } from "../../../shared/lib/useQueryParams"
 
 export const useOrderSelect = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const selectedOrder = queryParams.get("order") || "asc"
+  const { getQueryParam, updateQuery } = useQueryParams()
+  const selectedOrder = getQueryParam("order")
 
   const handleChangeOrder = (order: string) => {
-    const params = buildQueryString(queryParams, { order })
-    navigate(`?${params}`)
+    updateQuery({ order })
   }
 
   return {
