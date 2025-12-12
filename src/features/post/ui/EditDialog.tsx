@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../shared/ui"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, ErrorDisplay } from "../../../shared/ui"
 import { useEditDialog } from "../lib/useEditDialog"
 import EditForm from "./EditForm"
 
 const EditDialog = () => {
-  const { isOpen, post, resetDialog, handleUpdate } = useEditDialog()
+  const { isOpen, post, error, resetDialog, handleUpdate } = useEditDialog()
 
   return (
     <Dialog open={isOpen} onOpenChange={resetDialog}>
@@ -11,7 +11,7 @@ const EditDialog = () => {
         <DialogHeader>
           <DialogTitle>게시물 수정</DialogTitle>
         </DialogHeader>
-        {post && <EditForm post={post} handleUpdate={handleUpdate} />}
+        {error ? <ErrorDisplay error={error} /> : post && <EditForm post={post} handleUpdate={handleUpdate} />}
       </DialogContent>
     </Dialog>
   )

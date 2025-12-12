@@ -4,11 +4,12 @@ import { useQueryParams } from "../../../shared/lib/useQueryParams"
 
 export const useCommentList = (postId: number) => {
   const { getQueryParam } = useQueryParams()
-  const { data: comments } = useQuery(commentQueries.list(postId))
+  const { data: comments, error, refetch } = useQuery(commentQueries.list(postId))
   const search = getQueryParam("search")
 
   return {
-    comments,
+    comments: error ? [] : (comments?.comments ?? []),
+    refetch,
     search,
   }
 }

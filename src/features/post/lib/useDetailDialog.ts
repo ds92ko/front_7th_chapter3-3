@@ -9,13 +9,14 @@ export const useDetailDialog = () => {
   const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
   const id = dialogs.find((dialog) => dialog.type === "detail")?.id ?? null
-  const { data: post } = useQuery(postWithAuthorQueries.detail(queryClient, id))
+  const { data: post, error } = useQuery(postWithAuthorQueries.detail(queryClient, id))
 
   const search = getQueryParam("search")
 
   return {
     isOpen: !!post,
     post,
+    error,
     search,
     resetDialog,
   }

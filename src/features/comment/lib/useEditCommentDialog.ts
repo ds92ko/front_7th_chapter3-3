@@ -14,7 +14,7 @@ export const useEditCommentDialog = () => {
   const listData = queryClient.getQueryData(listQueryKey)
   const comment = listData?.comments.find((comment) => comment.id === dialog?.id)
 
-  const { mutate: updateCommentMutation } = useMutation(commentMutations.update(queryClient))
+  const { mutate: updateCommentMutation, isPending } = useMutation(commentMutations.update(queryClient))
 
   const handleUpdate = (body: string) => {
     if (!comment) return
@@ -25,6 +25,7 @@ export const useEditCommentDialog = () => {
   return {
     isOpen: !!dialog,
     comment,
+    isPending,
     resetDialog,
     handleUpdate,
   }

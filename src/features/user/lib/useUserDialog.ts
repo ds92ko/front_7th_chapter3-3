@@ -6,10 +6,11 @@ export const useUserDialog = () => {
   const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
   const id = dialogs.find((dialog) => dialog.type === "user")?.id ?? null
-  const { data: user } = useQuery(userQueries.detail(id))
+  const { data: user, error } = useQuery(userQueries.detail(id))
 
   return {
     user,
+    error,
     isOpen: !!user,
     resetDialog,
   }

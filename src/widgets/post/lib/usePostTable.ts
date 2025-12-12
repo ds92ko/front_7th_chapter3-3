@@ -15,12 +15,14 @@ export const usePostTable = () => {
   const search = getQueryParam("search")
 
   const params: PostsParams = { tag, limit, skip, sortBy, order, search }
-  const { data: cachedData, isLoading } = useQuery(postWithAuthorQueries.list(queryClient, params))
+  const { data: cachedData, isLoading, error, refetch } = useQuery(postWithAuthorQueries.list(queryClient, params))
 
   return {
     data: cachedData?.data || [],
     total: cachedData?.total || 0,
     isLoading,
+    error,
+    refetch,
     search,
   }
 }

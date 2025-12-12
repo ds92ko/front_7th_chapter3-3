@@ -7,7 +7,7 @@ export const useAddCommentDialog = () => {
   const queryClient = useQueryClient()
   const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
-  const { mutate: addCommentMutation } = useMutation(commentMutations.add(queryClient))
+  const { mutate: addCommentMutation, isPending } = useMutation(commentMutations.add(queryClient))
 
   const handleAdd = (body: CommentRequestBody) => {
     addCommentMutation(body)
@@ -19,6 +19,7 @@ export const useAddCommentDialog = () => {
   return {
     isOpen: !!id,
     id,
+    isPending,
     resetDialog,
     handleAdd,
   }

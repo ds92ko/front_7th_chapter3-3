@@ -4,8 +4,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useTagSelect } from "../lib/useTagSelect"
 
 const TagSelect = () => {
-  const { data: tags } = useQuery(tagQueries.list())
+  const { data: tags, error } = useQuery(tagQueries.list())
   const { selectedTag, handleChangeTag } = useTagSelect()
+
+  if (error) {
+    return (
+      <Select value={selectedTag} onValueChange={handleChangeTag} disabled>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="태그 로딩 실패" />
+        </SelectTrigger>
+      </Select>
+    )
+  }
 
   return (
     <Select value={selectedTag} onValueChange={handleChangeTag}>

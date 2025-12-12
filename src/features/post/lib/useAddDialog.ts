@@ -8,7 +8,7 @@ export const useAddDialog = () => {
   const { dialogs } = useDialogContext()
   const dialog = dialogs.find((dialog) => dialog.type === "add-post")
   const { resetDialog } = useDialogActions()
-  const { mutate: addPostMutation } = useMutation(postMutations.add(queryClient))
+  const { mutate: addPostMutation, isPending } = useMutation(postMutations.add(queryClient))
 
   const handleAdd = (addForm: AddPostBody) => {
     addPostMutation(addForm)
@@ -17,6 +17,7 @@ export const useAddDialog = () => {
 
   return {
     isOpen: !!dialog,
+    isPending,
     resetDialog,
     handleAdd,
   }

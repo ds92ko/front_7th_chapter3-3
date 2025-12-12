@@ -1,3 +1,5 @@
+import { ApiError } from "../model/error"
+
 export class ApiClient {
   private baseUrl: string
 
@@ -24,7 +26,22 @@ export class ApiClient {
 
   private async handleResponse<TResult>(response: Response): Promise<TResult> {
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
+      let errorMessage = `HTTP error! Status: ${response.status}`
+      try {
+        const errorData = await response.json().catch(() => null)
+        if (errorData && errorData.message) {
+          errorMessage = errorData.message
+        }
+      } catch {
+        // JSON 파싱 실패 시 기본 메시지 사용
+      }
+
+      const error: ApiError = {
+        message: errorMessage,
+        status: response.status,
+        code: response.statusText,
+      }
+      throw error
     }
 
     if (response.status === 204 || response.headers.get("content-length") === "0") {
@@ -34,7 +51,10 @@ export class ApiClient {
     try {
       return await response.json()
     } catch (error) {
-      throw new Error(`Error parsing JSON response: ${error}`)
+      const apiError: ApiError = {
+        message: `Error parsing JSON response: ${error instanceof Error ? error.message : String(error)}`,
+      }
+      throw apiError
     }
   }
 

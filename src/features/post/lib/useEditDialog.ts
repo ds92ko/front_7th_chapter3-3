@@ -9,8 +9,8 @@ export const useEditDialog = () => {
   const { dialogs } = useDialogContext()
   const { resetDialog } = useDialogActions()
   const id = dialogs.find((dialog) => dialog.type === "edit")?.id ?? null
-  const { data: post } = useQuery(postWithAuthorQueries.detail(queryClient, id))
-  const { mutate: updatePostMutation } = useMutation(postMutations.update(queryClient))
+  const { data: post, error } = useQuery(postWithAuthorQueries.detail(queryClient, id))
+  const { mutate: updatePostMutation, isPending } = useMutation(postMutations.update(queryClient))
 
   const handleUpdate = (editForm: UpdatePostBody) => {
     if (!id) return
@@ -21,6 +21,8 @@ export const useEditDialog = () => {
   return {
     isOpen: !!post,
     post,
+    error,
+    isPending,
     resetDialog,
     handleUpdate,
   }

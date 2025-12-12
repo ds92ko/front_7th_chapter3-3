@@ -5,6 +5,7 @@ import EditDialogButton from "../../../features/post/ui/EditDialogButton"
 import TagBadge from "../../../features/tag/ui/TagBadge"
 import UserInfo from "../../../features/user/ui/UserInfo"
 import {
+  ErrorDisplay,
   HighlightText,
   Loading,
   Table,
@@ -18,9 +19,13 @@ import { usePostTable } from "../lib/usePostTable"
 import PaginationControls from "./PaginationControls"
 
 const PostTable = () => {
-  const { data, total, isLoading, search } = usePostTable()
+  const { data, total, isLoading, error, refetch, search } = usePostTable()
 
   if (isLoading) return <Loading />
+
+  if (error) {
+    return <ErrorDisplay error={error} onRetry={() => refetch()} />
+  }
 
   return (
     <>

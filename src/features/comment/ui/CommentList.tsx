@@ -19,7 +19,7 @@ const CommentList = ({ id }: CommentListProps) => {
         <AddCommentDialogButton id={id} />
       </div>
       <div className="space-y-1">
-        {comments?.comments.map((comment) => (
+        {comments.map((comment) => (
           <div key={comment.id} className="flex items-center justify-between text-sm border-b pb-1">
             <div className="flex items-center space-x-2 overflow-hidden">
               <span className="font-medium truncate">{comment.user.username}:</span>
