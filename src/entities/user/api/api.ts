@@ -2,7 +2,7 @@ import { apiClient } from "../../../shared/api/base"
 import { UserResponse, UsersResponse } from "../model/types"
 
 export const getUsers = async () => {
-  const response = await apiClient.get<UsersResponse>("/api/users", {
+  const response = await apiClient.get<UsersResponse>("/users", {
     limit: 0,
     select: "username,image",
   })
@@ -10,6 +10,6 @@ export const getUsers = async () => {
 }
 
 export const getUser = async (id: number) => {
-  const response = await apiClient.get<UserResponse>(`/api/users/${id}`)
+  const response = await apiClient.get<UserResponse>(`/users/${id}`)
   return response
 }

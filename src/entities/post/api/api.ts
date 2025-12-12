@@ -10,31 +10,31 @@ import {
 } from "../model/types"
 
 export const getPosts = async (params: PostsParams) => {
-  const response = await apiClient.get<PostsResponse>("/api/posts", params)
+  const response = await apiClient.get<PostsResponse>("/posts", params)
   return response
 }
 
 export const getPostsBySearch = async (search: string) => {
-  const response = await apiClient.get<PostsResponse>(`/api/posts/search?q=${search}`)
+  const response = await apiClient.get<PostsResponse>(`/posts/search?q=${search}`)
   return response
 }
 
 export const getPostsByTag = async (tag: string) => {
-  const response = await apiClient.get<PostsResponse>(`/api/posts/tag/${tag}`)
+  const response = await apiClient.get<PostsResponse>(`/posts/tag/${tag}`)
   return response
 }
 
 export const addPost = async (body: AddPostBody) => {
-  const response = await apiClient.post<AddPostResponse>("/api/posts/add", body)
+  const response = await apiClient.post<AddPostResponse>("/posts/add", body)
   return response
 }
 
 export const updatePost = async (id: number, body: UpdatePostBody) => {
-  const response = await apiClient.put<UpdatePostResponse>(`/api/posts/${id}`, body)
+  const response = await apiClient.put<UpdatePostResponse>(`/posts/${id}`, body)
   return response
 }
 
 export const deletePost = async (id: number) => {
-  const response = await apiClient.delete<DeletePostResponse>(`/api/posts/${id}`)
+  const response = await apiClient.delete<DeletePostResponse>(`/posts/${id}`)
   return response
 }

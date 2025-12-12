@@ -123,4 +123,4 @@ export class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient()
+export const apiClient = new ApiClient(import.meta.env.DEV ? "/api" : "https://dummyjson.com")
